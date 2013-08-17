@@ -1,19 +1,19 @@
 <?php
 
 // INIT ROUTINES -- test
-add_action('init', 'citations_register');
-function citations_register() {
+add_action('init', 'casestudies_register');
+function casestudies_register() {
     $labels = array(
-        'name' => _x('Citations', 'post type general name'),
-        'singular_name' => _x('Citation', 'post type singular name'),
-        'add_new' => _x('Add New', 'citations'),
-        'add_new_item' => __('Add New Citation'),
-        'edit_item' => __('Edit Citation'),
-        'new_item' => __('New Citation'),
-        'view_item' => __('View Citation'),
-        'search_items' => __('Search Citations'),
-        'not_found' => __('No citations found'),
-        'not_found_in_trash' => __('No citations found in Trash'),
+        'name' => _x('Case Studies', 'post type general name'),
+        'singular_name' => _x('Case Study', 'post type singular name'),
+        'add_new' => _x('Add New', 'casestudies'),
+        'add_new_item' => __('Add New Case Study'),
+        'edit_item' => __('Edit Case Study'),
+        'new_item' => __('New Case Study'),
+        'view_item' => __('View Case Study'),
+        'search_items' => __('Search Case Studies'),
+        'not_found' => __('No case studies found'),
+        'not_found_in_trash' => __('No case studies found in Trash'),
         'parent_item_colon' => ''
     );
 
@@ -30,18 +30,19 @@ function citations_register() {
         'supports' => array('title', 'editor', 'thumbnail', 'excerpt')
     );
 
-    register_post_type('citations', $args);
-    register_taxonomy_for_object_type('subjects', 'citations');
-    register_taxonomy_for_object_type('themes', 'citations');
+    register_post_type('casestudies', $args);
+    register_taxonomy_for_object_type('engagements', 'casestudies');
+    register_taxonomy_for_object_type('processes', 'casestudies');
+    register_taxonomy_for_object_type('practices', 'casestudies');
 }
 
 
-add_action('admin_init', 'admin_init_citations');
-function admin_init_citations() {
-    add_meta_box("citation_source-meta", "Source Info", "citation_source", "citations", "side", "high");
+add_action('admin_init', 'admin_init_casestudies');
+function admin_init_casestudies() {
+    add_meta_box("casestudy_source-meta", "Source Info", "casestudy_source", "casestudies", "side", "high");
 }
 
-function citation_source() {
+function casestudy_source() {
     global $post;
 
     $custom = get_post_custom($post->ID);
@@ -58,8 +59,8 @@ function citation_source() {
 <?php
 }
 
-add_action('save_post', 'citation_save');
-function citation_save() {
+add_action('save_post', 'casestudy_save');
+function casestudy_save() {
     global $post;
 
     update_post_meta($post->ID, "source_author", $_POST["source_author"]);
@@ -67,24 +68,25 @@ function citation_save() {
     update_post_meta($post->ID, "source_url", $_POST["source_url"]);
 }
 
-add_filter("manage_edit-citations_columns", "citation_edit_columns");
-function citation_edit_columns($columns) {
+add_filter("manage_edit-casestudies_columns", "casestudy_edit_columns");
+function casestudy_edit_columns($columns) {
     $columns = array(
         "cb" => "<input type=\"checkbox\" />",
-        "title" => "Citation Title",
+        "title" => "Case Study Title",
         "description" => "Description",
         "source_author" => "Author",
         "source_name" => "Source",
 
-        "themes" => "Themes",
-        "subjects" => "Subjects"
+        "engagements" => "Engagements",
+        "practices" => "Practices",
+        "processes" => "Processes"
     );
 
     return($columns);
 }
 
-add_action("manage_citations_posts_custom_column", "citation_custom_columns");
-function citation_custom_columns($column) {
+add_action("manage_casestudies_posts_custom_column", "casestudy_custom_columns");
+function casestudy_custom_columns($column) {
     global $post;
 
     $custom = get_post_custom();
@@ -102,42 +104,42 @@ function citation_custom_columns($column) {
 
 
 
-        case "themes":
-            echo get_the_term_list($post->ID, 'themes', '', ', ', '');
+        case "engagements":
+            echo get_the_term_list($post->ID, 'engagements', '', ', ', '');
             break;
-        case "subjects":
-            echo get_the_term_list($post->ID, 'subjects', '', ', ', '');
+        case "processes":
+            echo get_the_term_list($post->ID, 'processes', '', ', ', '');
             break;
     }
 }
 
 //add filter to ensure the text Book, or book, is displayed when user updates a book
-add_filter('post_updated_messages', 'citation_updated_messages');
+add_filter('post_updated_messages', 'casestudy_updated_messages');
 
-function citation_updated_messages( $messages ) {
+function casestudy_updated_messages( $messages ) {
   global $post, $post_ID;
 
-  $messages['citations'] = array(
+  $messages['casestudies'] = array(
     0 => '', // Unused. Messages start at index 1.
-    1 => sprintf( __('Citation updated. <a href="%s">View citation</a>'), esc_url( get_permalink($post_ID) ) ),
+    1 => sprintf( __('Case Study updated. <a href="%s">View Case Study</a>'), esc_url( get_permalink($post_ID) ) ),
     2 => __('Custom field updated.'),
     3 => __('Custom field deleted.'),
-    4 => __('Citation updated.'),
+    4 => __('Case Study updated.'),
     /* translators: %s: date and time of the revision */
-    5 => isset($_GET['revision']) ? sprintf( __('Citation restored to revision from %s'), wp_post_revision_title( (int) $_GET['revision'], false ) ) : false,
-    6 => sprintf( __('Citation published. <a href="%s">View citation</a>'), esc_url( get_permalink($post_ID) ) ),
-    7 => __('Citation saved.'),
-    8 => sprintf( __('Citation submitted. <a target="_blank" href="%s">Preview citation</a>'), esc_url( add_query_arg( 'preview', 'true', get_permalink($post_ID) ) ) ),
-    9 => sprintf( __('Citation scheduled for: <strong>%1$s</strong>. <a target="_blank" href="%2$s">Preview citation</a>'),
+    5 => isset($_GET['revision']) ? sprintf( __('Case Study restored to revision from %s'), wp_post_revision_title( (int) $_GET['revision'], false ) ) : false,
+    6 => sprintf( __('Case Study published. <a href="%s">View Case Study</a>'), esc_url( get_permalink($post_ID) ) ),
+    7 => __('Case Study saved.'),
+    8 => sprintf( __('Case Study submitted. <a target="_blank" href="%s">Preview Case Study</a>'), esc_url( add_query_arg( 'preview', 'true', get_permalink($post_ID) ) ) ),
+    9 => sprintf( __('Case Study scheduled for: <strong>%1$s</strong>. <a target="_blank" href="%2$s">Preview Case Study</a>'),
       // translators: Publish box date format, see http://php.net/date
       date_i18n( __( 'M j, Y @ G:i' ), strtotime( $post->post_date ) ), esc_url( get_permalink($post_ID) ) ),
-    10 => sprintf( __('Citation draft updated. <a target="_blank" href="%s">Preview citation</a>'), esc_url( add_query_arg( 'preview', 'true', get_permalink($post_ID) ) ) ),
+    10 => sprintf( __('Case Study draft updated. <a target="_blank" href="%s">Preview Case Study</a>'), esc_url( add_query_arg( 'preview', 'true', get_permalink($post_ID) ) ) ),
   );
 
   return $messages;
 }
 
-add_shortcode('citation', 'citation_display');
+add_shortcode('casestudy', 'casestudy_display');
 
 
 
