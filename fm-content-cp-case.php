@@ -110,6 +110,9 @@ function casestudy_custom_columns($column) {
         case "processes":
             echo get_the_term_list($post->ID, 'processes', '', ', ', '');
             break;
+        case "practices":
+            echo get_the_term_list($post->ID, 'practices', '', ', ', '');
+            break;
     }
 }
 
