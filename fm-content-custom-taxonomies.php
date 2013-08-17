@@ -1,29 +1,29 @@
 <?php
 
-add_action('init', 'subjects_register');
-add_action('init', 'themes_register');
+add_action('init', 'engagements_register');
+add_action('init', 'processes_register');
 
-function subjects_register() {
+function engagements_register() {
     register_taxonomy(
-            "subjects",
+            "engagements",
             "post",
             array(
                 "hierarchical" => true,
-                "label" => "Subjects",
-                "singular_label" => "Subject",
+                "label" => "Engagements",
+                "singular_label" => "Engagement",
                 "rewrite" => true,
                 "show_ui" => true)
     );
 }
 
-function themes_register() {
+function processes_register() {
     register_taxonomy(
-            "themes",
+            "processes",
             "post",
             array(
                 "hierarchical" => true,
-                "label" => "Themes",
-                "singular_label" => "Theme",
+                "label" => "Processes",
+                "singular_label" => "Process",
                 "rewrite" => true,
                 "show_ui" => true)
     );
