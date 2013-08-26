@@ -67,7 +67,10 @@ function casestudy_summary() {
     $custom = get_post_custom($post->ID);
     $casestudy_summary = $custom["casestudy_summary"][0];
 ?>
-    <input name="casestudy_summary" value="<?php echo $casestudy_summary; ?>" /><br/>
+    <!-- <input name="casestudy_summary" value="<?php echo $casestudy_summary; ?>" size="100%" /><br/> -->
+    <textarea rows="1" cols="40" name="casestudy_summary" id="textfield_casestudy_summary">
+        <?php echo $casestudy_summary; ?>
+    </textarea>
 <?php
 }
 
