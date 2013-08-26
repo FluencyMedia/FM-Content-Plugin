@@ -39,10 +39,11 @@ function casestudies_register() {
 
 add_action('admin_init', 'admin_init_casestudies');
 function admin_init_casestudies() {
-    add_meta_box("casestudy_source-meta", "Source Info", "casestudy_source", "casestudies", "side", "high");
+    // add_meta_box("casestudy_source-meta", "Source Info", "casestudy_source", "casestudies", "side", "high");
+    add_meta_box("casestudy_summary-meta", "Case Study Summary", "casestudy_summary", "casestudies", "advanced", "high");
 }
 
-function casestudy_source() {
+/*function casestudy_source() {
     global $post;
 
     $custom = get_post_custom($post->ID);
@@ -58,14 +59,27 @@ function casestudy_source() {
     <input name="source_url" value="<?php echo $source_url; ?>" /><br/>
 <?php
 }
+*/
+
+function casestudy_summary() {
+    global $post;
+
+    $custom = get_post_custom($post->ID);
+    $casestudy_summary = $custom["casestudy_summary"][0];
+?>
+    <input name="source_summary" value="<?php echo $source_author; ?>" /><br/>
+<?php
+}
+
 
 add_action('save_post', 'casestudy_save');
 function casestudy_save() {
     global $post;
 
-    update_post_meta($post->ID, "source_author", $_POST["source_author"]);
-    update_post_meta($post->ID, "source_name", $_POST["source_name"]);
-    update_post_meta($post->ID, "source_url", $_POST["source_url"]);
+    update_post_meta($post->ID, "casestudy_summary", $_POST["casestudy_summary"]);
+    // update_post_meta($post->ID, "source_author", $_POST["source_author"]);
+    // update_post_meta($post->ID, "source_name", $_POST["source_name"]);
+    // update_post_meta($post->ID, "source_url", $_POST["source_url"]);
 }
 
 add_filter("manage_edit-casestudies_columns", "casestudy_edit_columns");
@@ -73,9 +87,9 @@ function casestudy_edit_columns($columns) {
     $columns = array(
         "cb" => "<input type=\"checkbox\" />",
         "title" => "Case Study Title",
-        "description" => "Description",
-        "source_author" => "Author",
-        "source_name" => "Source",
+        "casestudy_summary" => "Summary",
+        // "source_author" => "Author",
+        // "source_name" => "Source",
 
         "engagements" => "Engagements",
         "practices" => "Practices",
