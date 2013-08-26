@@ -67,7 +67,7 @@ function casestudy_summary() {
     $custom = get_post_custom($post->ID);
     $casestudy_summary = $custom["casestudy_summary"][0];
 ?>
-    <input name="source_summary" value="<?php echo $source_author; ?>" /><br/>
+    <input name="casestudy_summary" value="<?php echo $casestudy_summary; ?>" /><br/>
 <?php
 }
 
