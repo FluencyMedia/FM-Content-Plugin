@@ -39,8 +39,7 @@ function casestudies_register() {
 
 add_action('admin_init', 'admin_init_casestudies');
 function admin_init_casestudies() {
-    // add_meta_box("casestudy_source-meta", "Source Info", "casestudy_source", "casestudies", "side", "high");
-    add_meta_box("casestudy_summary-meta", "Case Study Summary", "casestudy_summary", "casestudies", "advanced", "high");
+    add_meta_box("casestudy_summary-meta", "Case Study: Summary", "casestudy_summary", "casestudies", "advanced", "high");
 }
 
 /*function casestudy_source() {
@@ -66,10 +65,21 @@ function casestudy_summary() {
 
     $custom = get_post_custom($post->ID);
     $casestudy_summary = $custom["casestudy_summary"][0];
+    $casestudy_results = $custom["casestudy_results"][0];
+    $casestudy_sellingpts = $custom["casestudy_sellingpts"][0];
 ?>
     <!-- <input name="casestudy_summary" value="<?php echo $casestudy_summary; ?>" size="100%" /><br/> -->
+    <label>Summary</label>
     <textarea rows="1" cols="40" name="casestudy_summary" id="textfield_casestudy_summary">
         <?php echo $casestudy_summary; ?>
+    </textarea>
+    <label>Results</label>
+    <textarea rows="1" cols="40" name="casestudy_results" id="textfield_casestudy_results">
+        <?php echo $casestudy_results; ?>
+    </textarea>
+    <label>Selling Points</label>
+    <textarea rows="1" cols="40" name="casestudy_sellingpts" id="textfield_casestudy_sellingpts">
+        <?php echo $casestudy_sellingpts; ?>
     </textarea>
 <?php
 }
@@ -80,9 +90,9 @@ function casestudy_save() {
     global $post;
 
     update_post_meta($post->ID, "casestudy_summary", $_POST["casestudy_summary"]);
+    update_post_meta($post->ID, "casestudy_results", $_POST["casestudy_results"]);
+    update_post_meta($post->ID, "casestudy_sellingpts", $_POST["casestudy_sellingpts"]);
     // update_post_meta($post->ID, "source_author", $_POST["source_author"]);
-    // update_post_meta($post->ID, "source_name", $_POST["source_name"]);
-    // update_post_meta($post->ID, "source_url", $_POST["source_url"]);
 }
 
 add_filter("manage_edit-casestudies_columns", "casestudy_edit_columns");
@@ -91,8 +101,6 @@ function casestudy_edit_columns($columns) {
         "cb" => "<input type=\"checkbox\" />",
         "title" => "Case Study Title",
         "casestudy_summary" => "Summary",
-        // "source_author" => "Author",
-        // "source_name" => "Source",
 
         "engagements" => "Engagements",
         "practices" => "Practices",
@@ -112,11 +120,8 @@ function casestudy_custom_columns($column) {
         case "description":
             the_excerpt();
             break;
-        case "source_name":
-            echo $custom["source_name"][0];
-            break;
-        case "source_author":
-            echo $custom["source_author"][0];
+        case "casestudy_summary":
+            echo $custom["casestudy_summary"][0];
             break;
 
 
@@ -133,7 +138,7 @@ function casestudy_custom_columns($column) {
     }
 }
 
-//add filter to ensure the text Book, or book, is displayed when user updates a book
+//add filter to ensure the text "Case Study", "Case Studies", etc., is displayed when user updates a book
 add_filter('post_updated_messages', 'casestudy_updated_messages');
 
 function casestudy_updated_messages( $messages ) {
