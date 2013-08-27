@@ -27,7 +27,8 @@ function casestudies_register() {
         'capability_type' => 'post',
         'hierarchical' => false,
         'menu_position' => null,
-        'supports' => array('title', 'editor', 'thumbnail', 'excerpt')
+        'supports' => array('title', 'editor', 'thumbnail')
+        // 'supports' => array('title', 'editor', 'thumbnail', 'excerpt')
     );
 
     register_post_type('casestudies', $args);
@@ -42,45 +43,44 @@ function admin_init_casestudies() {
     add_meta_box("casestudy_summary-meta", "Case Study: Summary", "casestudy_summary", "casestudies", "advanced", "high");
 }
 
-/*function casestudy_source() {
-    global $post;
 
-    $custom = get_post_custom($post->ID);
-    $source_author = $custom["source_author"][0];
-    $source_name = $custom["source_name"][0];
-    $source_url = $custom["source_url"][0];
-?>
-    <label>Author</label>
-    <input name="source_author" value="<?php echo $source_author; ?>" /><br/>
-    <label>Source</label>
-    <input name="source_name" value="<?php echo $source_name; ?>" /><br/>
-    <label>Link</label>
-    <input name="source_url" value="<?php echo $source_url; ?>" /><br/>
-<?php
-}
-*/
-
+// TODO: For some reason, these fields all have an extra set of blank spaces pre-pended every time they're echoed into the "textareas".
+// The "trim" function that is applied at the beginning of this function prevents them from building up and becoming longer every time 
+// the record is updated, but the underlying problem still needs to be addressed.
 function casestudy_summary() {
     global $post;
 
     $custom = get_post_custom($post->ID);
-    $casestudy_summary = $custom["casestudy_summary"][0];
-    $casestudy_results = $custom["casestudy_results"][0];
-    $casestudy_sellingpts = $custom["casestudy_sellingpts"][0];
+    $casestudy_summary = trim($custom["casestudy_summary"][0]);
+    $casestudy_results = trim($custom["casestudy_results"][0]);
+    $casestudy_sellingpts = trim($custom["casestudy_sellingpts"][0]);
 ?>
-    <!-- <input name="casestudy_summary" value="<?php echo $casestudy_summary; ?>" size="100%" /><br/> -->
-    <label>Summary</label>
-    <textarea rows="1" cols="40" name="casestudy_summary" id="textfield_casestudy_summary">
-        <?php echo $casestudy_summary; ?>
-    </textarea>
-    <label>Results</label>
-    <textarea rows="1" cols="40" name="casestudy_results" id="textfield_casestudy_results">
-        <?php echo $casestudy_results; ?>
-    </textarea>
-    <label>Selling Points</label>
-    <textarea rows="1" cols="40" name="casestudy_sellingpts" id="textfield_casestudy_sellingpts">
-        <?php echo $casestudy_sellingpts; ?>
-    </textarea>
+
+    <table width="100%">
+        <thead>
+            <td width="*"><label>Summary</label></td>
+            <td width="*"><label>Results</label></td>
+            <td width="*"><label>Selling Points</label></td>
+        </thead>
+        <tr>
+            <td>
+                <textarea rows="5" cols="40" name="casestudy_summary" id="textfield_casestudy_summary">
+                    <?php echo $casestudy_summary); ?>
+                </textarea>
+            </td>
+            <td>
+                <textarea rows="5" cols="40" name="casestudy_results" id="textfield_casestudy_results">
+                    <?php echo $casestudy_results; ?>
+                </textarea>
+            </td>
+            <td>
+                <textarea rows="5" cols="40" name="casestudy_sellingpts" id="textfield_casestudy_sellingpts">
+                    <?php echo $casestudy_sellingpts; ?>
+                </textarea>
+            </td>
+        </tr>
+    </table>
+
 <?php
 }
 
@@ -92,7 +92,6 @@ function casestudy_save() {
     update_post_meta($post->ID, "casestudy_summary", $_POST["casestudy_summary"]);
     update_post_meta($post->ID, "casestudy_results", $_POST["casestudy_results"]);
     update_post_meta($post->ID, "casestudy_sellingpts", $_POST["casestudy_sellingpts"]);
-    // update_post_meta($post->ID, "source_author", $_POST["source_author"]);
 }
 
 add_filter("manage_edit-casestudies_columns", "casestudy_edit_columns");
