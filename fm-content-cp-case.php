@@ -50,36 +50,39 @@ function admin_init_casestudies() {
 function casestudy_summary() {
     global $post;
 
+    echo '<input type="hidden" name="casestudy_post_noncename" id="casestudy_post_noncename" value="' . wp_create_nonce( plugin_basename(__FILE__) ) . '" />';
+
+
     $custom = get_post_custom($post->ID);
     $casestudy_summary = trim($custom["casestudy_summary"][0]);
     $casestudy_results = trim($custom["casestudy_results"][0]);
     $casestudy_sellingpts = trim($custom["casestudy_sellingpts"][0]);
 ?>
 
-    <table width="100%">
-        <thead>
-            <td width="*"><label>Summary</label></td>
-            <td width="*"><label>Results</label></td>
-            <td width="*"><label>Selling Points</label></td>
-        </thead>
-        <tr>
-            <td>
-                <textarea rows="5" cols="40" name="casestudy_summary" id="textfield_casestudy_summary">
-                    <?php echo $casestudy_summary); ?>
+    <div class="width_full p_box">
+        <p>
+            <label>Description<br>
+                <textarea name="casestudy_summary" class="widefat" rows="5">
+                    <?php echo $casestudy_summary; ?>
                 </textarea>
-            </td>
-            <td>
-                <textarea rows="5" cols="40" name="casestudy_results" id="textfield_casestudy_results">
+            </label>
+        </p>
+        <p>
+            <label>Results<br>
+                <textarea name="casestudy_results" class="widefat" rows="5">
                     <?php echo $casestudy_results; ?>
                 </textarea>
-            </td>
-            <td>
-                <textarea rows="5" cols="40" name="casestudy_sellingpts" id="textfield_casestudy_sellingpts">
+            </label>
+        </p>
+        <p>
+            <label>Selling Points<br>
+                <textarea name="casestudy_sellingpts" class="widefat" rows="5">
                     <?php echo $casestudy_sellingpts; ?>
                 </textarea>
-            </td>
-        </tr>
-    </table>
+            </label>
+        </p>
+    </div>
+
 
 <?php
 }
@@ -88,6 +91,19 @@ function casestudy_summary() {
 add_action('save_post', 'casestudy_save');
 function casestudy_save() {
     global $post;
+
+    // verify this came from the our screen and with proper authorization,
+    // because save_post can be triggered at other times
+    if( !wp_verify_nonce( $_POST['casestudy_post_noncename'], plugin_basename(__FILE__) ) ) {
+        return $post->ID;
+    }
+
+    // is the user allowed to edit the post or page?
+    if( ! current_user_can( 'edit_post', $post->ID )){
+        return $post->ID;
+    }
+    // ok, we're authenticated
+
 
     update_post_meta($post->ID, "casestudy_summary", $_POST["casestudy_summary"]);
     update_post_meta($post->ID, "casestudy_results", $_POST["casestudy_results"]);
@@ -115,12 +131,17 @@ function casestudy_custom_columns($column) {
 
     $custom = get_post_custom();
 
+    $strSummary = $custom["casestudy_summary"][0];
+    // if strlen($strSummary) > 50 {
+        $strSummary = substr($strSummary,0,100) . "...";
+    // }
+
     switch ($column) {
         case "description":
             the_excerpt();
             break;
         case "casestudy_summary":
-            echo $custom["casestudy_summary"][0];
+            echo $strSummary;
             break;
 
 
