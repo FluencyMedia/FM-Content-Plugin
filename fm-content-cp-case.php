@@ -1,7 +1,10 @@
 <?php
 
-// INIT ROUTINES -- test
+// INIT ROUTINES
+
+// This routine adds a handler to the "init" hook, calling the related funciton
 add_action('init', 'casestudies_register');
+// This module ensures that the Case Study post type is correctly registered, and all buttons and other actions are correctly labeled
 function casestudies_register() {
     $labels = array(
         'name' => _x('Case Studies', 'post type general name'),
@@ -28,7 +31,7 @@ function casestudies_register() {
         'hierarchical' => false,
         'menu_position' => null,
         'supports' => array('title', 'editor', 'thumbnail')
-        // 'supports' => array('title', 'editor', 'thumbnail', 'excerpt')
+        // FOR REFERENCE - Original line: 'supports' => array('title', 'editor', 'thumbnail', 'excerpt')
     );
 
     register_post_type('casestudies', $args);
@@ -43,6 +46,19 @@ function admin_init_casestudies() {
     add_meta_box("casestudy_summary-meta", "Case Study: Summary", "casestudy_summary", "casestudies", "advanced", "high");
 }
 
+
+// TEST CODE: Initial approach attempted to override the standard "single.php" template for Case Studies
+add_filter( 'template_include', 'casestudies_register_templates' );
+function casestudies_register_templates( $template ) {
+    $post_types = array( 'project' );
+
+    if ( is_post_type_archive( $post_types ) && ! file_exists( get_stylesheet_directory() . '/archive-casestudies.php' ) )
+        $template = plugin_dir_path( __FILE__ ).'/templates/archive-casestudies.php';
+    if ( is_singular( $post_types ) && ! file_exists( get_stylesheet_directory() . '/single-casestudy.php' ) )
+        $template = plugin_dir_path( __FILE__ ).'/templates/single-casestudy.php';
+
+    return $template;
+}
 
 // TODO: For some reason, these fields all have an extra set of blank spaces pre-pended every time they're echoed into the "textareas".
 // The "trim" function that is applied at the beginning of this function prevents them from building up and becoming longer every time 
